@@ -1,0 +1,99 @@
+{%- style -%}
+  .collection-hero {
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .collection-hero__title {
+    font-size: 3.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .collection-hero__description {
+    font-size: 1.8rem;
+    max-width: 60rem;
+    margin: 0 auto;
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-hero__title {
+      font-size: 2.4rem;
+    }
+    
+    .collection-hero__description {
+      font-size: 1.6rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="collection-hero section">
+  <div class="container">
+    {%- if collection.image and section.settings.show_collection_image -%}
+      <div class="collection-hero__image">
+        {{ collection.image | image_url: width: 1200 | image_tag:
+          loading: 'lazy',
+          alt: collection.image.alt | escape
+        }}
+      </div>
+    {%- endif -%}
+
+    <h1 class="collection-hero__title">{{ collection.title }}</h1>
+    
+    {%- if collection.description != blank and section.settings.show_collection_description -%}
+      <div class="collection-hero__description rte">
+        {{ collection.description }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "default": true,
+      "label": "Show collection description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "default": false,
+      "label": "Show collection image"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2", 
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-1",
+      "label": "Color scheme"
+    }
+  ]
+}
+{% endschema %}

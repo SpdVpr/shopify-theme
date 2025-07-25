@@ -1,0 +1,350 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+  {%- style -%}
+    .collection-product-grid {
+      padding: 4rem 0;
+    }
+
+    .collection-filters {
+      margin-bottom: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .collection-product-count {
+      font-size: 1.4rem;
+      color: var(--color-secondary);
+    }
+
+    .collection-sort {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .collection-sort select {
+      padding: 0.8rem 1.2rem;
+      border: 0.1rem solid var(--color-secondary);
+      border-radius: 0.4rem;
+      background-color: var(--color-background);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    @media screen and (min-width: 750px) {
+      .product-grid {
+        grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+      }
+    }
+
+    @media screen and (max-width: 749px) {
+      .product-grid {
+        grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
+      }
+    }
+
+    .product-card {
+      text-align: center;
+    }
+
+    .product-card__image {
+      position: relative;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border-radius: 0.8rem;
+    }
+
+    .product-card__image img {
+      width: 100%;
+      height: auto;
+      transition: transform var(--animation-duration) ease;
+    }
+
+    .product-card:hover .product-card__image img {
+      transform: scale(1.05);
+    }
+
+    .product-card__title {
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .product-card__title a {
+      color: var(--color-text);
+      text-decoration: none;
+    }
+
+    .product-card__title a:hover {
+      color: var(--color-primary);
+    }
+
+    .product-card__price {
+      font-size: 1.8rem;
+      font-weight: var(--font-body-weight-bold);
+      color: var(--color-primary);
+    }
+
+    .product-card__vendor {
+      font-size: 1.4rem;
+      color: var(--color-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 4rem;
+    }
+
+    .pagination a,
+    .pagination span {
+      padding: 0.8rem 1.2rem;
+      border: 0.1rem solid var(--color-secondary);
+      border-radius: 0.4rem;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .pagination a:hover {
+      background-color: var(--color-primary);
+      color: var(--color-background);
+      border-color: var(--color-primary);
+    }
+
+    .pagination .current {
+      background-color: var(--color-primary);
+      color: var(--color-background);
+      border-color: var(--color-primary);
+    }
+  {%- endstyle -%}
+
+  <div class="collection-product-grid section">
+    <div class="container">
+      {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+        <div class="collection-filters">
+          <div class="collection-product-count">
+            {{ 'templates.collection.product_count' | t: product_count: collection.products_count, count: collection.all_products_count }}
+          </div>
+          
+          {%- if section.settings.enable_sorting -%}
+            <div class="collection-sort">
+              <label for="SortBy">{{ 'collections.sorting.title' | t }}</label>
+              <select name="sort_by" id="SortBy" onchange="location.href = this.value">
+                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                <option value="{{ collection.url }}?sort_by=manual"{% if sort_by == 'manual' %} selected="selected"{% endif %}>{{ 'collections.sorting.featured' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=best-selling"{% if sort_by == 'best-selling' %} selected="selected"{% endif %}>{{ 'collections.sorting.best_selling' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=title-ascending"{% if sort_by == 'title-ascending' %} selected="selected"{% endif %}>{{ 'collections.sorting.az' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=title-descending"{% if sort_by == 'title-descending' %} selected="selected"{% endif %}>{{ 'collections.sorting.za' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=price-ascending"{% if sort_by == 'price-ascending' %} selected="selected"{% endif %}>{{ 'collections.sorting.price_ascending' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=price-descending"{% if sort_by == 'price-descending' %} selected="selected"{% endif %}>{{ 'collections.sorting.price_descending' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=created-descending"{% if sort_by == 'created-descending' %} selected="selected"{% endif %}>{{ 'collections.sorting.date_descending' | t }}</option>
+                <option value="{{ collection.url }}?sort_by=created-ascending"{% if sort_by == 'created-ascending' %} selected="selected"{% endif %}>{{ 'collections.sorting.date_ascending' | t }}</option>
+              </select>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if collection.products.size == 0 -%}
+        <div class="collection-empty">
+          <h2>{{ 'sections.collection_template.empty' | t }}</h2>
+          <p>{{ 'sections.collection_template.use_fewer_filters_html' | t: link: collection.url, class: 'underlined-link link' }}</p>
+        </div>
+      {%- else -%}
+        <div class="product-grid">
+          {%- for product in collection.products -%}
+            <div class="product-card">
+              <div class="product-card__image">
+                <a href="{{ product.url }}">
+                  {%- if product.featured_media -%}
+                    {{ product.featured_media | image_url: width: 400 | image_tag:
+                      loading: 'lazy',
+                      alt: product.featured_media.alt | escape,
+                      sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+                    }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {%- endif -%}
+                </a>
+              </div>
+
+              {%- if section.settings.show_vendor -%}
+                <div class="product-card__vendor">{{ product.vendor }}</div>
+              {%- endif -%}
+
+              <h3 class="product-card__title">
+                <a href="{{ product.url }}">{{ product.title | escape }}</a>
+              </h3>
+
+              <div class="product-card__price">
+                {%- if product.price_varies -%}
+                  {{ 'products.product.price.from_price_html' | t: price: product.price_min | money }}
+                {%- else -%}
+                  {{ product.price | money }}
+                  {%- if product.compare_at_price > product.price -%}
+                    <s>{{ product.compare_at_price | money }}</s>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+            {%- if paginate.previous -%}
+              <a href="{{ paginate.previous.url }}" class="pagination__item pagination__item--prev">
+                {{ 'general.pagination.previous' | t }}
+              </a>
+            {%- endif -%}
+
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <a href="{{ part.url }}" class="pagination__item">{{ part.title }}</a>
+              {%- else -%}
+                {%- if part.title == paginate.current_page -%}
+                  <span class="pagination__item current">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="pagination__item">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if paginate.next -%}
+              <a href="{{ paginate.next.url }}" class="pagination__item pagination__item--next">
+                {{ 'general.pagination.next' | t }}
+              </a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Product grid",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 50,
+      "step": 4,
+      "default": 24,
+      "label": "Products per page"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Natural"
+        },
+        {
+          "value": "square",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape (4:3)"
+        }
+      ],
+      "default": "natural",
+      "label": "Image ratio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": true,
+      "label": "Show second product image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show product vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show product rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable filtering"
+    },
+    {
+      "type": "select",
+      "id": "filter_type",
+      "options": [
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        },
+        {
+          "value": "vertical",
+          "label": "Vertical"
+        },
+        {
+          "value": "drawer",
+          "label": "Drawer"
+        }
+      ],
+      "default": "horizontal",
+      "label": "Filter type"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Enable sorting"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2",
+      "label": "Number of columns on mobile"
+    }
+  ]
+}
+{% endschema %}
