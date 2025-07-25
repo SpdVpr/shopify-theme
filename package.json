@@ -1,0 +1,37 @@
+{
+  "name": "modern-shopify-theme",
+  "version": "1.0.0",
+  "description": "Moderní a responzivní Shopify theme",
+  "main": "index.js",
+  "scripts": {
+    "dev": "shopify theme dev",
+    "deploy": "shopify theme push",
+    "pull": "shopify theme pull",
+    "check": "shopify theme check",
+    "package": "shopify theme package"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "ecommerce",
+    "responsive",
+    "modern"
+  ],
+  "author": "Custom Developer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/shopify-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/shopify-template/issues"
+  },
+  "homepage": "https://github.com/your-username/shopify-template#readme",
+  "devDependencies": {
+    "@shopify/cli": "^3.0.0",
+    "@shopify/theme": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

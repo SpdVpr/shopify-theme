@@ -1,0 +1,235 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .hero-{{ section.id }} {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: {% if section.settings.height == 'small' %}40vh{% elsif section.settings.height == 'medium' %}60vh{% else %}80vh{% endif %};
+    background-color: var(--color-background);
+    overflow: hidden;
+  }
+
+  .hero-{{ section.id }}__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .hero-{{ section.id }}__media img,
+  .hero-{{ section.id }}__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-{{ section.id }}__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+    z-index: 2;
+  }
+
+  .hero-{{ section.id }}__content {
+    position: relative;
+    z-index: 3;
+    text-align: {{ section.settings.text_alignment }};
+    color: {% if section.settings.image != blank %}#ffffff{% else %}var(--color-text){% endif %};
+    max-width: 80rem;
+    padding: 0 2rem;
+  }
+
+  .hero-{{ section.id }}__title {
+    font-size: 4.8rem;
+    font-weight: var(--font-heading-weight);
+    line-height: 1.1;
+    margin-bottom: 2rem;
+  }
+
+  .hero-{{ section.id }}__subtitle {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero-{{ section.id }}__title {
+      font-size: 3.2rem;
+    }
+    
+    .hero-{{ section.id }}__subtitle {
+      font-size: 1.8rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="hero-{{ section.id }} section-{{ section.id }}-padding">
+  {%- if section.settings.image != blank -%}
+    <div class="hero-{{ section.id }}__media">
+      {%- assign image_height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio -%}
+      {{ section.settings.image | image_url: width: 3840 | image_tag:
+        loading: 'lazy',
+        width: section.settings.image.width,
+        height: image_height,
+        sizes: '100vw',
+        widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+        alt: section.settings.image.alt | escape
+      }}
+    </div>
+    <div class="hero-{{ section.id }}__overlay"></div>
+  {%- endif -%}
+
+  <div class="hero-{{ section.id }}__content container">
+    {%- if section.settings.title != blank -%}
+      <h1 class="hero-{{ section.id }}__title">
+        {{ section.settings.title | escape }}
+      </h1>
+    {%- endif -%}
+    
+    {%- if section.settings.subtitle != blank -%}
+      <p class="hero-{{ section.id }}__subtitle">
+        {{ section.settings.subtitle | escape }}
+      </p>
+    {%- endif -%}
+    
+    {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
+      <a href="{{ section.settings.button_link }}" class="btn btn--primary">
+        {{ section.settings.button_text | escape }}
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Vítejte v našem obchodě",
+      "label": "Nadpis"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "default": "Objevte naši úžasnou kolekci produktů",
+      "label": "Podnadpis"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "default": "Nakupovat nyní",
+      "label": "Text tlačítka"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Odkaz tlačítka"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Obrázek na pozadí"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Malá"
+        },
+        {
+          "value": "medium",
+          "label": "Střední"
+        },
+        {
+          "value": "large",
+          "label": "Velká"
+        }
+      ],
+      "default": "large",
+      "label": "Výška sekce"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Vlevo"
+        },
+        {
+          "value": "center",
+          "label": "Na střed"
+        },
+        {
+          "value": "right",
+          "label": "Vpravo"
+        }
+      ],
+      "default": "center",
+      "label": "Zarovnání textu"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Průhlednost překrytí",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Odsazení"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Odsazení nahoře",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Odsazení dole",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}
