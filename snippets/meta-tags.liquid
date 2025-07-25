@@ -1,0 +1,124 @@
+{%- assign og_title = page_title -%}
+{%- assign og_url = canonical_url -%}
+{%- assign og_type = 'website' -%}
+{%- assign og_description = page_description | default: shop.description | default: shop.name -%}
+
+{%- if request.page_type == 'product' -%}
+  {%- assign og_type = 'product' -%}
+  {%- if product.featured_media -%}
+    {%- assign og_image = product.featured_media | image_url: width: 1200, height: 630 -%}
+    {%- assign og_image_alt = product.featured_media.alt | escape -%}
+  {%- endif -%}
+{%- elsif request.page_type == 'article' -%}
+  {%- assign og_type = 'article' -%}
+  {%- if article.image -%}
+    {%- assign og_image = article.image | image_url: width: 1200, height: 630 -%}
+    {%- assign og_image_alt = article.image.alt | escape -%}
+  {%- endif -%}
+{%- elsif request.page_type == 'collection' -%}
+  {%- if collection.image -%}
+    {%- assign og_image = collection.image | image_url: width: 1200, height: 630 -%}
+    {%- assign og_image_alt = collection.image.alt | escape -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- unless og_image -%}
+  {%- if settings.share_image -%}
+    {%- assign og_image = settings.share_image | image_url: width: 1200, height: 630 -%}
+    {%- assign og_image_alt = settings.share_image.alt | escape -%}
+  {%- endif -%}
+{%- endunless -%}
+
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ og_url }}">
+<meta property="og:title" content="{{ og_title | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:description" content="{{ og_description | escape }}">
+
+{%- if og_image -%}
+  <meta property="og:image" content="http:{{ og_image }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  {%- if og_image_alt -%}
+    <meta property="og:image:alt" content="{{ og_image_alt }}">
+  {%- endif -%}
+{%- endif -%}
+
+{%- if request.page_type == 'product' -%}
+  <meta property="product:brand" content="{{ product.vendor | escape }}">
+  <meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+  <meta property="product:condition" content="new">
+  <meta property="product:price:amount" content="{{ product.price | money_without_currency | strip }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  <meta property="product:retailer_item_id" content="{{ product.selected_or_first_available_variant.sku }}">
+{%- endif -%}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ og_title | escape }}">
+<meta name="twitter:description" content="{{ og_description | escape }}">
+{%- if og_image -%}
+  <meta name="twitter:image" content="https:{{ og_image }}">
+  {%- if og_image_alt -%}
+    <meta name="twitter:image:alt" content="{{ og_image_alt }}">
+  {%- endif -%}
+{%- endif -%}
+
+{%- if settings.social_twitter_link != blank -%}
+  <meta name="twitter:site" content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}">
+{%- endif -%}
+
+{%- if request.page_type == 'index' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ shop.url | append: page.url | json }}
+    }
+  </script>
+{%- endif -%}
+
+{%- if request.page_type == 'product' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org/",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ shop.url | append: product.url | json }},
+      {% if product.featured_media -%}
+        {%- assign image_size = product.featured_media.width | append: 'x' -%}
+        "image": [
+          {{ product.featured_media | image_url: width: product.featured_media.width | prepend: "https:" | json }}
+        ],
+      {%- endif %}
+      "description": {{ product.description | strip_html | json }},
+      {% if product.selected_or_first_available_variant.sku != blank -%}
+        "sku": {{ product.selected_or_first_available_variant.sku | json }},
+      {%- endif %}
+      "brand": {
+        "@type": "Brand",
+        "name": {{ product.vendor | json }}
+      },
+      "offers": [
+        {%- for variant in product.variants -%}
+          {
+            "@type" : "Offer",
+            {%- if variant.sku != blank -%}
+              "sku": {{ variant.sku | json }},
+            {%- endif -%}
+            "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+            "price" : {{ variant.price | divided_by: 100.00 | json }},
+            "priceCurrency" : {{ cart.currency.iso_code | json }},
+            "url" : {{ shop.url | append: variant.url | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
