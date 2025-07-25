@@ -127,12 +127,11 @@
       <div class="image-with-text__media">
         {%- if section.settings.image != blank -%}
           {%- assign image_height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio -%}
-          {{ section.settings.image | image_url: width: 1500 | image_tag:
-            loading: 'lazy',
-            width: section.settings.image.width,
-            height: image_height,
-            alt: section.settings.image.alt | escape
-          }}
+          <img src="{{ section.settings.image | image_url: width: 1500 }}"
+               alt="{{ section.settings.image.alt | escape }}"
+               loading="lazy"
+               width="{{ section.settings.image.width }}"
+               height="{{ image_height }}">
         {%- else -%}
           {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
         {%- endif -%}

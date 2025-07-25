@@ -1,3 +1,7 @@
+{%- liquid
+  assign product_form_id = 'product-form-' | append: section.id
+-%}
+
 {%- style -%}
   .product {
     padding: 4rem 0;
@@ -217,11 +221,10 @@
             {%- for media in product.media -%}
               <div class="product__media-item">
                 {%- if media.media_type == 'image' -%}
-                  {{ media | image_url: width: 800 | image_tag:
-                    loading: 'lazy',
-                    alt: media.alt | escape,
-                    sizes: '(min-width: 990px) 50vw, 100vw'
-                  }}
+                  <img src="{{ media | image_url: width: 800 }}"
+                       alt="{{ media.alt | escape }}"
+                       loading="lazy"
+                       sizes="(min-width: 990px) 50vw, 100vw">
                 {%- elsif media.media_type == 'video' -%}
                   {{ media | video_tag: controls: true }}
                 {%- endif -%}
@@ -236,6 +239,9 @@
       </div>
 
       <div class="product__info">
+        <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" id="{{ product_form_id }}" class="form">
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'vendor' -%}
@@ -348,14 +354,13 @@
               </div>
           {%- endcase -%}
         {%- endfor -%}
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-{%- liquid
-  assign product_form_id = 'product-form-' | append: section.id
--%}
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

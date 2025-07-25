@@ -145,19 +145,17 @@
             <div class="product-card__image">
               <a href="{{ product.url }}">
                 {%- if product.featured_media -%}
-                  {{ product.featured_media | image_url: width: 400 | image_tag:
-                    loading: 'lazy',
-                    alt: product.featured_media.alt | escape,
-                    sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
-                  }}
+                  <img src="{{ product.featured_media | image_url: width: 400 }}"
+                       alt="{{ product.featured_media.alt | escape }}"
+                       loading="lazy"
+                       sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw">
                   
                   {%- if section.settings.show_secondary_image and product.media[1] != null -%}
-                    {{ product.media[1] | image_url: width: 400 | image_tag:
-                      loading: 'lazy',
-                      alt: product.media[1].alt | escape,
-                      class: 'product-card__image--secondary',
-                      sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
-                    }}
+                    <img src="{{ product.media[1] | image_url: width: 400 }}"
+                         alt="{{ product.media[1].alt | escape }}"
+                         loading="lazy"
+                         class="product-card__image--secondary"
+                         sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw">
                   {%- endif -%}
                 {%- else -%}
                   {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
