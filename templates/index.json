@@ -6,57 +6,36 @@
         "title": "Vítejte v našem obchodě",
         "subtitle": "Objevte naši úžasnou kolekci produktů",
         "button_text": "Nakupovat nyní",
-        "button_link": "/collections/all",
-        "image": "",
-        "height": "large",
-        "text_alignment": "center",
-        "overlay_opacity": 30
+        "button_link": "/collections/all"
       }
     },
     "featured-collection": {
       "type": "featured-collection",
       "settings": {
         "title": "Doporučené produkty",
-        "collection": "",
         "products_to_show": 8,
         "columns_desktop": 4,
-        "columns_mobile": 2,
-        "show_view_all": true,
-        "image_ratio": "natural",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false
+        "columns_mobile": "2"
       }
     },
     "image-with-text": {
       "type": "image-with-text",
       "settings": {
-        "image": "",
-        "height": "medium",
-        "desktop_image_width": "medium",
-        "layout": "image_first",
-        "desktop_content_position": "middle",
-        "desktop_content_alignment": "left",
-        "content_layout": "no-overlap",
         "title": "O naší značce",
-        "text": "<p>Jsme moderní e-shop zaměřený na kvalitní produkty a vynikající zákaznický servis. Naše mise je přinášet vám to nejlepší za skvělé ceny.</p>",
-        "button_label": "Více o nás",
-        "button_link": "/pages/about",
-        "color_scheme": "background-1"
+        "text": "<p>Jsme moderní e-shop zaměřený na kvalitní produkty a vynikající zákaznický servis.</p>"
       }
     },
     "newsletter": {
       "type": "newsletter",
       "settings": {
         "title": "Zůstaňte v obraze",
-        "text": "Přihlaste se k odběru našeho newsletteru a získejte 10% slevu na první nákup!",
-        "color_scheme": "accent-1"
+        "text": "<p>Přihlaste se k odběru našeho newsletteru a získejte slevu na první nákup!</p>"
       }
     }
   },
   "order": [
     "hero",
-    "featured-collection", 
+    "featured-collection",
     "image-with-text",
     "newsletter"
   ]

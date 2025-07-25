@@ -2,46 +2,56 @@
   "sections": {
     "main": {
       "type": "main-product",
-      "blocks": [
-        {
+      "blocks": {
+        "vendor_1": {
           "type": "vendor",
           "settings": {}
         },
-        {
+        "title_1": {
           "type": "title",
           "settings": {}
         },
-        {
+        "price_1": {
           "type": "price",
           "settings": {}
         },
-        {
+        "variant_picker_1": {
           "type": "variant_picker",
           "settings": {
             "picker_type": "button"
           }
         },
-        {
+        "quantity_selector_1": {
           "type": "quantity_selector",
           "settings": {}
         },
-        {
+        "buy_buttons_1": {
           "type": "buy_buttons",
           "settings": {
             "show_dynamic_checkout": true,
             "show_gift_card_recipient": false
           }
         },
-        {
+        "description_1": {
           "type": "description",
           "settings": {}
         },
-        {
+        "share_1": {
           "type": "share",
           "settings": {
             "share_label": "Sdílet"
           }
         }
+      },
+      "block_order": [
+        "vendor_1",
+        "title_1",
+        "price_1",
+        "variant_picker_1",
+        "quantity_selector_1",
+        "buy_buttons_1",
+        "description_1",
+        "share_1"
       ],
       "settings": {
         "enable_sticky_info": true,
